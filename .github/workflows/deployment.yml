@@ -3,7 +3,7 @@ on: [push, workflow_dispatch]
 jobs:
   lint:
     runs-on: ubuntu-latest
-    step:
+    steps:
       - name: Checking out code
         run: actions/checkout@v5
       - name: Install Dependencies
@@ -12,7 +12,7 @@ jobs:
         run: npm run lint
   testandbuild:
     runs-on: ubuntu-latest
-    step:
+    steps:
       - name: Checking out code
         run: actions/checkout@v5
       - name: Install Dependencies
