@@ -1,9 +1,8 @@
 name: New Issues Added
 on: issues
 jobs:
-  info:
-    output-info:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Output Event Details
-          runs: echo "${{ toJSON(github.event) }}"
+  output-info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output Event Details
+        runs: echo "${{ toJSON(github.event) }}"
