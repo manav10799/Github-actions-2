@@ -1,18 +1,19 @@
 name: Actitvity Events
-on: 
+on:
   pull_request:
     types: opened
   workflow_dispatch:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - name: get code
         uses: actions/checkout@v5
       - name: install dependencies
         run: npm ci
-      - name: Test and Build
+      - name: Test
         run: npm run test
+      - name: Build
         run: npm run build
       - name: Deploy
         run: echo "Deploying..."
