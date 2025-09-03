@@ -37,5 +37,11 @@ jobs:
     needs: testandbuild
     runs-on: ubuntu-latest
     steps:
+      - name: Get build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: Frontend-Build
+      - name: output content
+        run: ls
       - name: Deploy
         run: echo "Deploying..."
