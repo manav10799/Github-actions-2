@@ -6,6 +6,8 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    outputs:
+      build-number: ${{ steps.set-output-step.outputs.number }}
     steps:
       - name: Checking out code
         uses: actions/checkout@v5
@@ -13,10 +15,12 @@ jobs:
         run: npm ci
       - name: Run Eslint
         run: npm run lint
+      - name: Generate Build Number
+        id: set-output-step
+        rum: echo "number=12345" >> $GITHUB_OUTPUT
   testandbuild:
+    needs: lint
     runs-on: ubuntu-latest
-    outputs:
-      script-file: ${{ steps.publush.outputs.file-name }}
     steps:
       - name: Checking out code
         uses: actions/checkout@v5
@@ -26,9 +30,6 @@ jobs:
         run: npm run test
       - name: Run Build
         run: npm run build
-      - name: Publish JS filename
-        id: publish
-        run: find dist/assets/*.js -type f -execdir echo 'file-name={}' >> $GITHUB_OUTPUT ';'
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -36,6 +37,8 @@ jobs:
           path: |
             dist
             package.json
+      -name: Print Build Number
+        run: echo "Deploying build ${{ needs.lint.outputs.build-number}}"
       - name: Success
         run: echo "Success"
   deploy:
@@ -48,7 +51,5 @@ jobs:
           name: Frontend-Build
       - name: output content
         run: ls
-      - name: Output Filename
-        run: echo "${{ needs.build.outputs.file-name }}"
       - name: Deploy
         run: echo "Deploying..."
