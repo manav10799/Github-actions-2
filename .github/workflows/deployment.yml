@@ -15,6 +15,8 @@ jobs:
         run: npm run lint
   testandbuild:
     runs-on: ubuntu-latest
+    outputs:
+      script-file: ${{ steps.publush.outputs.file-name }}
     steps:
       - name: Checking out code
         uses: actions/checkout@v5
@@ -24,6 +26,9 @@ jobs:
         run: npm run test
       - name: Run Build
         run: npm run build
+      - name: Publish JS filename
+        id: publish
+        run: find dist/assets/*.js -type f -execdir echo 'file-name={}' >> $GITHUB_OUTPUT ';'
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -43,5 +48,7 @@ jobs:
           name: Frontend-Build
       - name: output content
         run: ls
+      - name: Output Filename
+        run: echo "${{ needs.build.outputs.file-name }}"
       - name: Deploy
         run: echo "Deploying..."
