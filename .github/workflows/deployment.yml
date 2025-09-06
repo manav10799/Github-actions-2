@@ -17,7 +17,7 @@ jobs:
         run: npm run lint
       - name: Generate Build Number
         id: set-output-step
-        rum: echo "number=12345" >> $GITHUB_OUTPUT
+        run: echo "number=12345" >> $GITHUB_OUTPUT
   testandbuild:
     needs: lint
     runs-on: ubuntu-latest
