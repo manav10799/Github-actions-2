@@ -2,8 +2,8 @@ name: Test And Deploy
 on:
   push:
     branches:
-      - "dev"
-  workflow-dispatch:
+      - dev
+  workflow_dispatch:
 jobs:
   lint:
     runs-on: ubuntu-latest
