@@ -1,57 +1,39 @@
-name: Lint Pipeline
+name: Test And Deploy
 on:
   push:
     branches:
-      - main
+      - dev
+  workflow_dispatch:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.package-version.outputs.version }}
     steps:
-      - name: Checking out code
+      - name: Pull Repo Code
         uses: actions/checkout@v5
       - name: Install Dependencies
         run: npm ci
-      - name: Run Eslint
+      - name: Run Lint
         run: npm run lint
-      - name: Set output version
-        id: pacakge-version
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-  testandbuild:
-    needs: lint
+
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checking out code
+      - name: Pull Repo Code
         uses: actions/checkout@v5
       - name: Install Dependencies
         run: npm ci
       - name: Run Test
         run: npm run test
-      - name: Run Build
-        run: npm run build
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: Frontend-Build
-          path: |
-            dist
-            package.json
-      - name: Print Version Number
-        run: echo "Deploying build ${{ needs.lint.outputs.version}}"
-      - name: Success
-        run: echo "Success"
+
   deploy:
-    needs: testandbuild
+    needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Get build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: Frontend-Build
-      - name: output content
-        run: ls
+      - name: Pull Repo Code
+        uses: actions/checkout@v5
+      - name: Install Dependencies and Build
+        run: |
+          npm ci
+          npm run build
       - name: Deploy
-        run: echo "Deploying..."
+        run: echo "Deploying..........."
